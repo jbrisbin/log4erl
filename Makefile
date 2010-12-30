@@ -1,17 +1,19 @@
-SRC = src
+ERL ?= erl
+APP := log4erl
 
-all:    subdirs
+.PHONY: deps
 
-subdirs: 
-	cd ${SRC}; make
+all: deps
+	@./rebar compile
 
-# remove all the code
-clean: 
-	rm -rf ebin/*.beam erl_crash.dump
-	rm -f *~
-	rm -f src/*~
-	rm -f ebin/*~
-	rm -f include/*~
-	cd ${SRC}; make clean
-#install:
-#        cp -f ebin/* ../../www/ebin
+deps:
+	@./rebar get-deps
+
+clean:
+	@./rebar clean
+
+distclean: clean
+	@./rebar delete-deps
+
+docs:
+	@erl -noshell -run edoc_run application '$(APP)' '"."' '[]'
